@@ -2,7 +2,6 @@ package cocapi
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -14,6 +13,15 @@ import (
 var urlClan = "https://api.clashofclans.com/v1/clans/%s"
 var urlMembers = "https://api.clashofclans.com/v1/clans/%s/members"
 var myKey, myClanTag string
+
+type ServerError struct {
+	msg       string
+	ErrorCode int
+}
+
+func (e *ServerError) Error() string {
+	return e.msg
+}
 
 func init() {
 	myKey = os.Getenv("COC_KEY")
@@ -118,7 +126,8 @@ func getUrl(url, key string) (b []byte, err error) {
 	b, err = ioutil.ReadAll(resp.Body)
 	if resp.StatusCode != 200 {
 		b = []byte{}
-		err = errors.New("Error from server: " + strconv.Itoa(resp.StatusCode))
+		//err = errors.New("Error from server: " + strconv.Itoa(resp.StatusCode))
+		err = &ServerError{msg: "Error from server: " + strconv.Itoa(resp.StatusCode), ErrorCode: resp.StatusCode}
 	}
 	return
 }
