@@ -10,6 +10,7 @@ import (
 	"strconv"
 )
 
+var urlPlayers = "https://api.clashofclans.com/v1/players/%s"
 var urlClan = "https://api.clashofclans.com/v1/clans/%s"
 var urlMembers = "https://api.clashofclans.com/v1/clans/%s/members"
 var myKey, myClanTag string
@@ -93,6 +94,63 @@ type Members struct {
 	} `json:"items"`
 }
 
+type Player struct {
+	Tag               string `json:"tag"`
+	Name              string `json:"name"`
+	TownHallLevel     int    `json:"townHallLevel"`
+	ExpLevel          int    `json:"expLevel"`
+	Trophies          int    `json:"trophies"`
+	BestTrophies      int    `json:"bestTrophies"`
+	WarStars          int    `json:"warStars"`
+	AttackWins        int    `json:"attackWins"`
+	DefenseWins       int    `json:"defenseWins"`
+	Role              string `json:"role"`
+	Donations         int    `json:"donations"`
+	DonationsReceived int    `json:"donationsReceived"`
+	Clan              struct {
+		Tag       string `json:"tag"`
+		Name      string `json:"name"`
+		ClanLevel int    `json:"clanLevel"`
+		BadgeUrls struct {
+			Small  string `json:"small"`
+			Large  string `json:"large"`
+			Medium string `json:"medium"`
+		} `json:"badgeUrls"`
+	} `json:"clan"`
+	League struct {
+		ID       int    `json:"id"`
+		Name     string `json:"name"`
+		IconUrls struct {
+			Small  string `json:"small"`
+			Tiny   string `json:"tiny"`
+			Medium string `json:"medium"`
+		} `json:"iconUrls"`
+	} `json:"league"`
+	Achievements []struct {
+		Name           string `json:"name"`
+		Stars          int    `json:"stars"`
+		Value          int    `json:"value"`
+		Target         int    `json:"target"`
+		Info           string `json:"info"`
+		CompletionInfo string `json:"completionInfo,omitempty"`
+	} `json:"achievements"`
+	Troops []struct {
+		Name     string `json:"name"`
+		Level    int    `json:"level"`
+		MaxLevel int    `json:"maxLevel"`
+	} `json:"troops"`
+	Heroes []struct {
+		Name     string `json:"name"`
+		Level    int    `json:"level"`
+		MaxLevel int    `json:"maxLevel"`
+	} `json:"heroes"`
+	Spells []struct {
+		Name     string `json:"name"`
+		Level    int    `json:"level"`
+		MaxLevel int    `json:"maxLevel"`
+	} `json:"spells"`
+}
+
 func GetMemberInfo() (members Members, err error) {
 	body, err := getUrl(fmt.Sprintf(urlMembers, url.QueryEscape(myClanTag)), myKey)
 	if err != nil {
@@ -102,12 +160,21 @@ func GetMemberInfo() (members Members, err error) {
 	return
 }
 
-func getClanInfo(clanTag string) (clan ClanInfo, err error) {
+func GetClanInfo(clanTag string) (clan ClanInfo, err error) {
 	body, err := getUrl(fmt.Sprintf(urlClan, url.QueryEscape(clanTag)), myKey)
 	if err != nil {
 		return
 	}
 	err = json.Unmarshal(body, &clan)
+	return
+}
+
+func GetPlayerInfo(memberTag string) (player Player, err error) {
+	body, err := getUrl(fmt.Sprintf(urlPlayers, url.QueryEscape(memberTag)), myKey)
+	if err != nil {
+		return
+	}
+	err = json.Unmarshal(body, &player)
 	return
 }
 
