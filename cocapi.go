@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math"
 	"net/http"
 	"net/url"
 	"os"
@@ -132,6 +133,30 @@ type Player struct {
 		Level    int    `json:"level"`
 		MaxLevel int    `json:"maxLevel"`
 	} `json:"spells"`
+}
+
+type DonationRatio []Member
+
+func (c DonationRatio) Len() int {
+	return len(c)
+}
+
+func (c DonationRatio) Swap(i, j int) {
+	c[i], c[j] = c[j], c[i]
+}
+
+func (c DonationRatio) Less(i, j int) bool {
+	var d = make([]float64, 4)
+	d[0], d[1], d[2], d[3] = float64(c[i].Donations), float64(c[i].DonationsReceived), float64(c[j].Donations), float64(c[j].DonationsReceived)
+	for k, n := range d {
+		if n == 0 {
+			d[k] = math.SmallestNonzeroFloat64
+		}
+	}
+	if (d[0] / d[1]) == (d[2] / d[3]) {
+		return d[0] > d[2]
+	}
+	return (d[0] / d[1]) > (d[2] / d[3])
 }
 
 func GetMemberInfo() (members Members, err error) {
