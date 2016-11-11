@@ -43,55 +43,38 @@ type ClanInfo struct {
 		IsCountry bool   `json:"isCountry"`
 		Name      string `json:"name"`
 	} `json:"location"`
-	MemberList []struct {
-		ClanRank          int `json:"clanRank"`
-		Donations         int `json:"donations"`
-		DonationsReceived int `json:"donationsReceived"`
-		ExpLevel          int `json:"expLevel"`
-		League            struct {
-			IconUrls struct {
-				Medium string `json:"medium"`
-				Small  string `json:"small"`
-				Tiny   string `json:"tiny"`
-			} `json:"iconUrls"`
-			ID   int    `json:"id"`
-			Name string `json:"name"`
-		} `json:"league"`
-		Name             string `json:"name"`
-		PreviousClanRank int    `json:"previousClanRank"`
-		Role             string `json:"role"`
-		Trophies         int    `json:"trophies"`
-	} `json:"memberList"`
-	Members          int    `json:"members"`
+	MemberList       []Member `json:"memberList"`
+	Members          int      `json:"members"`
+	Name             string   `json:"name"`
+	RequiredTrophies int      `json:"requiredTrophies"`
+	Tag              string   `json:"tag"`
+	Type             string   `json:"type"`
+	WarFrequency     string   `json:"warFrequency"`
+	WarWins          int      `json:"warWins"`
+}
+
+type Member struct {
+	ClanRank          int `json:"clanRank"`
+	Donations         int `json:"donations"`
+	DonationsReceived int `json:"donationsReceived"`
+	ExpLevel          int `json:"expLevel"`
+	League            struct {
+		IconUrls struct {
+			Medium string `json:"medium"`
+			Small  string `json:"small"`
+			Tiny   string `json:"tiny"`
+		} `json:"iconUrls"`
+		ID   int    `json:"id"`
+		Name string `json:"name"`
+	} `json:"league"`
 	Name             string `json:"name"`
-	RequiredTrophies int    `json:"requiredTrophies"`
-	Tag              string `json:"tag"`
-	Type             string `json:"type"`
-	WarFrequency     string `json:"warFrequency"`
-	WarWins          int    `json:"warWins"`
+	PreviousClanRank int    `json:"previousClanRank"`
+	Role             string `json:"role"`
+	Trophies         int    `json:"trophies"`
 }
 
 type Members struct {
-	Items []struct {
-		ClanRank          int `json:"clanRank"`
-		Donations         int `json:"donations"`
-		DonationsReceived int `json:"donationsReceived"`
-		ExpLevel          int `json:"expLevel"`
-		League            struct {
-			IconUrls struct {
-				Medium string `json:"medium"`
-				Small  string `json:"small"`
-				Tiny   string `json:"tiny"`
-			} `json:"iconUrls"`
-			ID   int    `json:"id"`
-			Name string `json:"name"`
-		} `json:"league"`
-		Tag              string `json:"tag"`
-		Name             string `json:"name"`
-		PreviousClanRank int    `json:"previousClanRank"`
-		Role             string `json:"role"`
-		Trophies         int    `json:"trophies"`
-	} `json:"items"`
+	Items []Member `json:"items"`
 }
 
 type Player struct {
