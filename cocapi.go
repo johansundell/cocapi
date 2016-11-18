@@ -135,7 +135,7 @@ type Player struct {
 	} `json:"spells"`
 }
 
-func GetMemberInfo() (members Members, clan string, err error) {
+func GetMemberInfo(clan string) (members Members, err error) {
 	body, err := getUrl(fmt.Sprintf(urlMembers, url.QueryEscape(clan)), myKey)
 	if err != nil {
 		return
