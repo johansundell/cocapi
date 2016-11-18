@@ -71,6 +71,7 @@ type Member struct {
 	Name             string `json:"name"`
 	PreviousClanRank int    `json:"previousClanRank"`
 	Role             string `json:"role"`
+	Tag              string `json:"tag"`
 	Trophies         int    `json:"trophies"`
 }
 
