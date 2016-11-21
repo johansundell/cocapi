@@ -6,15 +6,12 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"os"
 	"strconv"
 )
 
 var urlPlayers = "https://api.clashofclans.com/v1/players/%s"
 var urlClan = "https://api.clashofclans.com/v1/clans/%s"
 var urlMembers = "https://api.clashofclans.com/v1/clans/%s/members"
-
-var myKey /*, myClanTag*/ string
 
 type ServerError struct {
 	msg       string
@@ -23,11 +20,6 @@ type ServerError struct {
 
 func (e *ServerError) Error() string {
 	return e.msg
-}
-
-func init() {
-	myKey = os.Getenv("COC_KEY")
-	//myClanTag = os.Getenv("COC_CLANTAG")
 }
 
 type ClanInfo struct {
@@ -136,8 +128,16 @@ type Player struct {
 	} `json:"spells"`
 }
 
-func GetMemberInfo(clan string) (members Members, err error) {
-	body, err := getUrl(fmt.Sprintf(urlMembers, url.QueryEscape(clan)), myKey)
+type Client struct {
+	secret string
+}
+
+func NewClient(secret string) Client {
+	return Client{secret: secret}
+}
+
+func (c *Client) GetMembers(clanTag string) (members Members, err error) {
+	body, err := getUrl(fmt.Sprintf(urlMembers, url.QueryEscape(clanTag)), c.secret)
 	if err != nil {
 		return
 	}
@@ -145,8 +145,8 @@ func GetMemberInfo(clan string) (members Members, err error) {
 	return
 }
 
-func GetClanInfo(clanTag string) (clan ClanInfo, err error) {
-	body, err := getUrl(fmt.Sprintf(urlClan, url.QueryEscape(clanTag)), myKey)
+func (c *Client) GetClanInfo(clanTag string) (clan ClanInfo, err error) {
+	body, err := getUrl(fmt.Sprintf(urlClan, url.QueryEscape(clanTag)), c.secret)
 	if err != nil {
 		return
 	}
@@ -154,8 +154,8 @@ func GetClanInfo(clanTag string) (clan ClanInfo, err error) {
 	return
 }
 
-func GetPlayerInfo(memberTag string) (player Player, err error) {
-	body, err := getUrl(fmt.Sprintf(urlPlayers, url.QueryEscape(memberTag)), myKey)
+func (c *Client) GetPlayerInfo(memberTag string) (player Player, err error) {
+	body, err := getUrl(fmt.Sprintf(urlPlayers, url.QueryEscape(memberTag)), c.secret)
 	if err != nil {
 		return
 	}
